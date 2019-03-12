@@ -676,13 +676,11 @@ export const getTrackLeft = spec => {
     slideHeight: slideHeightArray,
     fade,
     vertical,
-    currentSlide,
   } = spec;
 
   var slideOffset = 0;
   var targetLeft;
   var targetSlide;
-  var verticalOffset = 0;
 
   if (fade || spec.slideCount === 1) {
     return 0;
