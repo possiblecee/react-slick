@@ -679,8 +679,6 @@ export const getTrackLeft = spec => {
     currentSlide,
   } = spec;
 
-  const slideHeight = slideHeightArray[currentSlide ? currentSlide - 1 : 0];
-
   var slideOffset = 0;
   var targetLeft;
   var targetSlide;
@@ -718,12 +716,12 @@ export const getTrackLeft = spec => {
     }
   }
   slideOffset = slidesToOffset * slideWidth;
-  verticalOffset = slidesToOffset * slideHeight;
 
   if (!vertical) {
     targetLeft = slideIndex * slideWidth * -1 + slideOffset;
   } else {
-    targetLeft = slideIndex * slideHeight * -1 + verticalOffset;
+    targetLeft = 0;
+    new Array(slideIndex).fill('').map((v, i) => targetLeft -= slideHeightArray[i]);
   }
 
   if (variableWidth === true) {
