@@ -114,17 +114,21 @@ export const initializedState = spec => {
   } else {
     slideWidth = listWidth;
   }
-  let slideHeight =
-    ReactDOM.findDOMNode(spec.listRef) &&
+
+  let slideHeight = [];
+  new Array(slideCount).fill('').map((v, i) => {
+    slideHeight[i] = ReactDOM.findDOMNode(spec.listRef) &&
     getHeight(
-      ReactDOM.findDOMNode(spec.listRef).querySelector('[data-index="0"]')
+      ReactDOM.findDOMNode(spec.listRef).querySelector(`[data-index="${i}"]`)
     );
-  let listHeight = slideHeight * spec.slidesToShow;
+  });
+
   let currentSlide =
     spec.currentSlide === undefined ? spec.initialSlide : spec.currentSlide;
   if (spec.rtl && spec.currentSlide === undefined) {
     currentSlide = slideCount - 1 - spec.initialSlide;
   }
+  let listHeight = slideHeight[currentSlide]; // TODO only working when slidesToShow === 1
   let lazyLoadedList = spec.lazyLoadedList || [];
   let slidesToLoad = getOnDemandLazySlides(
     { currentSlide, lazyLoadedList },
@@ -569,7 +573,7 @@ export const getTrackCSS = spec => {
   if (!spec.vertical) {
     trackWidth = getTotalSlides(spec) * spec.slideWidth;
   } else {
-    trackHeight = trackChildren * spec.slideHeight;
+    trackHeight = trackChildren * spec.slideHeight[spec.currentSlide ? spec.currentSlide - 1 : 0];
   }
   let style = {
     opacity: 1,
@@ -669,10 +673,13 @@ export const getTrackLeft = spec => {
     slideWidth,
     listWidth,
     variableWidth,
-    slideHeight,
+    slideHeight: slideHeightArray,
     fade,
-    vertical
+    vertical,
+    currentSlide,
   } = spec;
+
+  const slideHeight = slideHeightArray[currentSlide ? currentSlide - 1 : 0];
 
   var slideOffset = 0;
   var targetLeft;
